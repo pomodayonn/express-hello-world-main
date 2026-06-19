@@ -4,146 +4,387 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat App</title>
+
     <style>
-      .chat {
-        display: flex;
-        flex-direction: column;
-        height: 80vh;
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        background: #f5f5f5;
       }
+
+      .name-screen {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f5f5f5;
+      }
+
+      .name-box {
+        background: white;
+        padding: 24px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        width: 300px;
+      }
+
+      .name-box h1 {
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+
+      .name-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        margin-bottom: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      .name-button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        background: #333;
+        color: white;
+        cursor: pointer;
+      }
+
+      .chat {
+        display: none;
+        flex-direction: column;
+        height: 100vh;
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+      }
+
+      .chat-header {
+        padding: 12px;
+        border-bottom: 1px solid #ccc;
+        background: #fafafa;
+        font-weight: bold;
+      }
+
       .messages {
         flex: 1;
         overflow-y: auto;
         list-style: none;
-        padding: 0;
+        padding: 16px;
         margin: 0;
       }
+
+      .messages li {
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        background: #eee;
+        border-radius: 8px;
+      }
+
+      .messages li.mine {
+        background: #dff0ff;
+        text-align: right;
+      }
+
+      .messages li.system {
+        background: transparent;
+        color: #777;
+        text-align: center;
+        font-size: 13px;
+      }
+
       .form {
         display: flex;
+        gap: 6px;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        background: white;
       }
+
       .input {
         flex: 1;
         padding: 10px;
         border: 1px solid #ccc;
+        border-radius: 6px;
+        min-width: 0;
       }
+
+      .tool-button,
       .submit {
-        padding: 10px;
+        padding: 10px 12px;
         border: 1px solid #ccc;
+        border-radius: 6px;
         background: #eee;
+        cursor: pointer;
+      }
+
+      .panel {
+        display: none;
+        border-top: 1px solid #ccc;
+        background: #fafafa;
+        padding: 10px;
+      }
+
+      .panel.show {
+        display: block;
+      }
+
+      .emoji-list,
+      .stamp-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .emoji-button,
+      .stamp-button {
+        font-size: 22px;
+        padding: 8px 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+      }
+
+      .stamp-button {
+        font-size: 16px;
+      }
+
+      .color-area{
+        margin-bottom: 12px;
+      }
+      .color-area label{
+        display: block;
+        font-size: 14px;
+        margin-bottom: 6px;
+      }
+
+      .color-input{
+        width: 100%;
+        height: 40px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
         cursor: pointer;
       }
     </style>
   </head>
+
   <body>
+    <div class="name-screen">
+      <div class="name-box">
+        <h1>名前を入力してください</h1>
+        <input class="name-input" placeholder="例：電大太郎" autocomplete="off" />
+        <div class="color-area">
+          <label for='colorInput'>チャットの色を選んでください</label>
+          <input id="colorInput" class="color-input" type="color" value="#dff0ff"/>
+        </div>
+        <button class="name-button">入室</button>
+      </div>
+    </div>
+
+
     <div class="chat">
+      <div class="chat-header"></div>
+
       <ul class="messages"></ul>
+
       <form class="form">
-        <input class="input" autocomplete="off" />
+        <button type="button" class="tool-button" id="emojiButton">😊</button>
+        <button type="button" class="tool-button" id="stampButton">⌨️</button>
+        <input class="input" autocomplete="off" placeholder="メッセージを入力…" />
         <button class="submit">Send</button>
       </form>
+
+      <div class="panel" id="emojiPanel">
+        <div class="emoji-list">
+          <button class="emoji-button">😀</button>
+          <button class="emoji-button">😂</button>
+          <button class="emoji-button">😊</button>
+          <button class="emoji-button">😍</button>
+          <button class="emoji-button">😎</button>
+          <button class="emoji-button">😭</button>
+          <button class="emoji-button">😡</button>
+          <button class="emoji-button">👍</button>
+          <button class="emoji-button">👏</button>
+          <button class="emoji-button">🙏</button>
+          <button class="emoji-button">🔥</button>
+          <button class="emoji-button">✨</button>
+          <button class="emoji-button">❤️</button>
+          <button class="emoji-button">🎉</button>
+          <button class="emoji-button">🌸</button>
+        </div>
+      </div>
+
+      <div class="panel" id="stampPanel">
+        <div class="stamp-list">
+          <button class="stamp-button" data-stamp="よろしくお願いします！">よろしくお願いします！</button>
+          <button class="stamp-button" data-stamp="了解です！">了解です！</button>
+          <button class="stamp-button" data-stamp="ありがとう！">ありがとう！</button>
+          <button class="stamp-button" data-stamp="すごい！">すごい！</button>
+          <button class="stamp-button" data-stamp="いいね！">いいね！</button>
+          <button class="stamp-button" data-stamp="おつかれさま！">おつかれさま！</button>
+        </div>
+      </div>
     </div>
-    <canvas
-      id="canvas"
-      width="600"
-      height="600"
-      style="border: solid 1px black"
-    ></canvas>
 
     <script>
       function main() {
         const host = location.origin.replace(/^http/, 'ws')
         const ws = new WebSocket(host + '/ws')
+
         const myId = self.crypto.randomUUID().substr(0, 8)
+        let myName = ''
+        let myColor = '#dff0ff'
 
-        const canvas = document.getElementById('canvas')
-        const ctx = canvas.getContext('2d')
+        const nameScreen = document.querySelector('.name-screen')
+        const nameInput = document.querySelector('.name-input')
+        const nameButton = document.querySelector('.name-button')
+        const colorInpu = document.getElementById('colorInput')
 
-        let drawing = false
+        const chat = document.querySelector('.chat')
+        const chatHeader = document.querySelector('.chat-header')
+        const form = document.querySelector('.form')
+        const input = document.querySelector('.input')
+        const messageList = document.querySelector('.messages')
 
-        canvas.addEventListener('mousedown', (e) => {
-          sendDrawingEvent(e.offsetX, e.offsetY, 'mousedown')
-        })
-        function mousedown() {
-          drawing = true
-          ctx.beginPath()
+        const emojiButton = document.getElementById('emojiButton')
+        const stampButton = document.getElementById('stampButton')
+        const emojiPanel = document.getElementById('emojiPanel')
+        const stampPanel = document.getElementById('stampPanel')
+
+        function closePanels() {
+          emojiPanel.classList.remove('show')
+          stampPanel.classList.remove('show')
         }
 
-        canvas.addEventListener('mousemove', (e) => {
-          if (drawing) {
-            sendDrawingEvent(e.offsetX, e.offsetY, 'mousemove')
-          }
-        })
-        function mousemove(x, y) {
-          if (drawing) {
-            draw(x, y, true)
-          }
-        }
+        function togglePanel(panel) {
+          const isOpen = panel.classList.contains('show')
+          closePanels()
 
-        canvas.addEventListener('mouseup', (e) => {
-          sendDrawingEvent(e.offsetX, e.offsetY, 'mouseup')
-        })
-        function mouseup() {
-          drawing = false
-          ctx.beginPath()
-        }
-
-        canvas.addEventListener('mouseout', (e) => {
-          sendDrawingEvent(e.offsetX, e.offsetY, 'mouseout')
-        })
-        function mouseout() {
-          drawing = false
-        }
-
-        function draw(x, y, dragging) {
-          if (dragging) {
-            ctx.lineTo(x, y)
-            ctx.stroke()
-          } else {
-            ctx.moveTo(x, y)
+          if (!isOpen) {
+            panel.classList.add('show')
           }
         }
 
-        function sendDrawingEvent(x, y, control) {
-          const message = JSON.stringify({ x, y, control, type: 'paint' })
-          ws.send(message)
+        function addText(text) {
+          input.value += text
+          input.focus()
         }
+
+        function sendMessage(text) {
+          const messageText = text.trim()
+
+          if (messageText === '') return
+
+          if (ws.readyState !== WebSocket.OPEN) {
+            console.error('WebSocket is not open')
+            return
+          }
+
+          ws.send(
+            JSON.stringify({
+              id: myId,
+              name: myName,
+              color: myColor,
+              text: messageText,
+              type: 'chat'
+            })
+          )
+
+          input.value = ''
+          input.focus()
+        }
+
+        function enterChat() {
+          const name = nameInput.value.trim()
+
+          if (name === '') {
+            alert('名前を入力してください')
+            return
+          }
+
+          myName = name
+          myColor = colorInpu.value
+
+          nameScreen.style.display = 'none'
+          chat.style.display = 'flex'
+          chatHeader.textContent = `チャット参加中`
+
+          input.focus()
+
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(
+              JSON.stringify({
+                type: 'system',
+                text: `${myName} さんが入室しました`
+              })
+            )
+          }
+        }
+
+        nameButton.onclick = enterChat
+
+        nameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            enterChat()
+          }
+        })
+
+        emojiButton.onclick = () => {
+          togglePanel(emojiPanel)
+        }
+
+        stampButton.onclick = () => {
+          togglePanel(stampPanel)
+        }
+
+        document.querySelectorAll('.emoji-button').forEach((button) => {
+          button.onclick = () => {
+            addText(button.textContent)
+          }
+        })
+
+        document.querySelectorAll('.stamp-button').forEach((button) => {
+          button.onclick = () => {
+            sendMessage(button.dataset.stamp)
+            closePanels()
+          }
+        })
 
         ws.onmessage = (event) => {
           const msg = JSON.parse(event.data)
-          if (msg.type === 'paint') {
-            const { x, y, control } = msg
-            console.log({ control })
-            if (control === 'mousedown') {
-              mousedown()
-            } else if (control === 'mouseup') {
-              mouseup()
-            } else if (control === 'mousemove') {
-              mousemove(x, y)
-            } else if (control === 'mouseout') {
-              mouseout()
-            }
-          }
+
           if (msg.type === 'chat') {
-            const { id, text } = msg
-            const messageList = document.querySelector('.messages')
             const li = document.createElement('li')
-            if (id === myId) {
-              li.textContent = `(${id})自分:` + text
+
+            if (msg.id === myId) {
+              li.classList.add('mine')
+              li.textContent = `${msg.name}: ${msg.text}`
             } else {
-              li.textContent = id + ': ' + text
+              li.textContent = `${msg.name}: ${msg.text}`
             }
+            
+            li.style.backgroundColor = msg.color || '#eee'
+            
             messageList.appendChild(li)
+            messageList.scrollTop = messageList.scrollHeight
+          }
+
+          if (msg.type === 'system') {
+            const li = document.createElement('li')
+            li.classList.add('system')
+            li.textContent = msg.text
+
+            messageList.appendChild(li)
+            messageList.scrollTop = messageList.scrollHeight
           }
         }
 
-        const form = document.querySelector('.form')
-
         form.onsubmit = function (e) {
           e.preventDefault()
-          const input = document.querySelector('.input')
-          const text = input.value
-          ws.send(JSON.stringify({ id: myId, text, type: 'chat' }))
-          input.value = ''
-          input.focus()
+          sendMessage(input.value)
         }
 
         ws.onerror = function (error) {
